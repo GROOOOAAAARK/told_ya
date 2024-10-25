@@ -5,12 +5,12 @@ use core::hash::{Hash, HashStateTrait, HashStateExTrait};
 #[starknet::interface]
 pub trait IToldYa<TContractState> {
     fn create_event(ref self: TContractState, name: felt252, predictions_deadline: felt252, event_datetime: felt252, type_: felt252) -> Event_;
-    fn create_prediction(ref self: TContractState, event_identifier: felt252, value: felt252) -> Prediction;
+    fn create_prediction(ref self: TContractState, event_identifier: felt252, value: felt252, buyingPrice: felt252) -> Prediction;
     fn get_events(self: @TContractState) -> Array<Event_>;
     fn get_predictions(self: @TContractState) -> Array<Prediction>;
     fn get_user_predictions(self: @TContractState, user: ContractAddress) -> Array<Prediction>;
     fn buy_prediction (ref self: TContractState, prediction_identifier: felt252) -> Prediction;
-    fn get_user_bought_predictions(self: @TContractState, user_address: ContractAddress) -> Array<felt252>;
+    fn get_user_bought_predictions(self: @TContractState, user_address: ContractAddress) -> Array<Prediction>;
 }
 
 #[derive(Serde, Drop, Copy, starknet::Store)]
@@ -28,11 +28,15 @@ pub struct Prediction {
     pub event_identifier: felt252,
     pub value: felt252,
     pub creator: ContractAddress,
+    pub buyingPrice: felt252,
 }
 
 #[starknet::contract]
 mod ToldYa {
 
+    use told_ya::IToldYa;
+    use core::option::OptionTrait;
+    use core::traits::TryInto;
     use core::poseidon::PoseidonTrait;
     use core::hash::{Hash, HashStateTrait, HashStateExTrait};
     use starknet::ContractAddress;
@@ -101,7 +105,7 @@ mod ToldYa {
             new_event
         }
 
-        fn create_prediction(ref self: ContractState, event_identifier: felt252, value: felt252) -> Prediction {
+        fn create_prediction(ref self: ContractState, event_identifier: felt252, value: felt252, buyingPrice: felt252) -> Prediction {// buyingToken: Option<ContractAddress>, buyingPrice: Option<u128>) -> Prediction {
 
             //TODO: [PERF] Use the storage var `events_id` to check if the event_identifier is valid.
             // 1) Checking if event_identifier is valid
@@ -129,15 +133,20 @@ mod ToldYa {
             let hash_state = PoseidonTrait::new();
             let hash_result: felt252 = hash_state.update(event_identifier).update(value).update(caller_address.into()).finalize();
 
-            // 4) Creating the instance of the new prediction
+            // 4) Checking the buying options
+            let defaultBuyingPrice: felt252 = 0.try_into().unwrap();
+            let safeBuyingPrice: felt252 = buyingPrice.try_into().unwrap_or(defaultBuyingPrice);
+
+            // 5) Creating the instance of the new prediction
             let new_prediction: Prediction = Prediction {
                 identifier: hash_result,
                 event_identifier: event_identifier,
                 value: value,
-                creator: caller_address
+                creator: caller_address,
+                buyingPrice: safeBuyingPrice,
             };
 
-            // 5) Storing the new event in Storage
+            // 6) Storing the new event in Storage
             self.predictions.write(new_prediction.identifier, new_prediction);
 
             // 6) Adding the id to predictions_id
@@ -187,6 +196,18 @@ mod ToldYa {
             };
             user_predictions
         }
+
+        fn get_user_bought_predictions(self: @ContractState, user_address: ContractAddress) -> Array<Prediction> {
+            let mut predictions_bought_by_user: Array<felt252> = self.user_bought_predictions.read(user_address);
+            let mut response_predictions = ArrayTrait::<Prediction>::new();
+            while !predictions_bought_by_user.is_empty(){
+                let user_prediction_id = predictions_bought_by_user.pop_front().unwrap();
+                let prediction = self.predictions.read(user_prediction_id);
+                response_predictions.append(prediction);
+            };
+            response_predictions
+        }
+
     }
 }
 
