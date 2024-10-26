@@ -226,8 +226,10 @@ mod ToldYa {
             };
             let mut interface = IERC20CamelDispatcher{contract_address:prediction.buyingToken};
             let this_address = starknet::get_contract_address();
-            interface.approve(this_address, prediction.buyingPrice.try_into().unwrap());
-            interface.transferFrom(caller_address, this_address, prediction.buyingPrice.try_into().unwrap());
+            if prediction.buyingPrice > 0 {
+                interface.approve(this_address, prediction.buyingPrice.try_into().unwrap());
+                interface.transferFrom(caller_address, this_address, prediction.buyingPrice.try_into().unwrap());
+            }
             user_bought_predictions.append(prediction);
             prediction
         }
