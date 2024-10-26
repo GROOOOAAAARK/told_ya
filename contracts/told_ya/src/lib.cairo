@@ -1,11 +1,11 @@
-use starknet::ContractAddress;
+use starknet::{ContractAddress};
 use openzeppelin::access::ownable::OwnableComponent;
 use core::hash::{Hash, HashStateTrait, HashStateExTrait};
 
 #[starknet::interface]
 pub trait IToldYa<TContractState> {
     fn create_event(ref self: TContractState, name: felt252, predictions_deadline: felt252, event_datetime: felt252, type_: felt252) -> Event_;
-    fn create_prediction(ref self: TContractState, event_identifier: felt252, value: felt252, buyingPrice: felt252) -> Prediction;
+    fn create_prediction(ref self: TContractState, event_identifier: felt252, value: felt252, buyingToken: ContractAddress, buyingPrice: u256) -> Prediction;
     fn get_events(self: @TContractState) -> Array<Event_>;
     fn get_predictions(self: @TContractState) -> Array<Prediction>;
     fn get_user_predictions(self: @TContractState, user: ContractAddress) -> Array<Prediction>;
@@ -28,7 +28,8 @@ pub struct Prediction {
     pub event_identifier: felt252,
     pub value: felt252,
     pub creator: ContractAddress,
-    pub buyingPrice: felt252,
+    pub buyingToken: ContractAddress,
+    pub buyingPrice: u256,
 }
 
 #[starknet::contract]
@@ -39,6 +40,8 @@ mod ToldYa {
     use core::traits::TryInto;
     use core::poseidon::PoseidonTrait;
     use core::hash::{Hash, HashStateTrait, HashStateExTrait};
+    use openzeppelin::token::erc20::interface::IERC20CamelDispatcher;
+    use openzeppelin::token::erc20::interface::IERC20CamelDispatcherTrait;
     use starknet::ContractAddress;
     use super::Event_;
     use super::Prediction;
@@ -57,6 +60,7 @@ mod ToldYa {
         predictions: LegacyMap::<felt252, Prediction>,
         predictions_id: Array<felt252>,
         user_predictions_id: LegacyMap::<ContractAddress, Array<felt252>>,
+        user_bought_predictions: LegacyMap::<ContractAddress, Array<felt252>>,
         #[substorage(v0)]
         ownable: super::OwnableComponent::Storage
     }
@@ -105,7 +109,7 @@ mod ToldYa {
             new_event
         }
 
-        fn create_prediction(ref self: ContractState, event_identifier: felt252, value: felt252, buyingPrice: felt252) -> Prediction {// buyingToken: Option<ContractAddress>, buyingPrice: Option<u128>) -> Prediction {
+        fn create_prediction(ref self: ContractState, event_identifier: felt252, value: felt252, buyingToken: ContractAddress, buyingPrice: u256) -> Prediction {
 
             //TODO: [PERF] Use the storage var `events_id` to check if the event_identifier is valid.
             // 1) Checking if event_identifier is valid
@@ -208,6 +212,8 @@ mod ToldYa {
             response_predictions
         }
 
+        fn buy_prediction (ref self: ContractState, prediction_identifier: felt252) -> Prediction {
+        }
     }
 }
 
