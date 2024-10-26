@@ -138,8 +138,9 @@ mod ToldYa {
             let hash_result: felt252 = hash_state.update(event_identifier).update(value).update(caller_address.into()).finalize();
 
             // 4) Checking the buying options
-            let defaultBuyingPrice: felt252 = 0.try_into().unwrap();
-            let safeBuyingPrice: felt252 = buyingPrice.try_into().unwrap_or(defaultBuyingPrice);
+            let defaultBuyingPrice: u256 = 0.try_into().unwrap();
+            let safeBuyingToken: ContractAddress = buyingToken.try_into().unwrap();
+            let safeBuyingPrice: u256 = buyingPrice.try_into().unwrap_or(defaultBuyingPrice);
 
             // 5) Creating the instance of the new prediction
             let new_prediction: Prediction = Prediction {
@@ -147,6 +148,7 @@ mod ToldYa {
                 event_identifier: event_identifier,
                 value: value,
                 creator: caller_address,
+                buyingToken: safeBuyingToken,
                 buyingPrice: safeBuyingPrice,
             };
 
@@ -213,6 +215,21 @@ mod ToldYa {
         }
 
         fn buy_prediction (ref self: ContractState, prediction_identifier: felt252) -> Prediction {
+            let mut prediction = self.predictions.read(prediction_identifier);
+            let caller_address = starknet::get_caller_address();
+            assert!(prediction.creator != caller_address, "You can't buy your own prediction.");
+
+            let mut user_bought_predictions: Array<Prediction> = self.get_user_bought_predictions(caller_address);
+            while !user_bought_predictions.is_empty(){
+                let prediction_id: felt252 = user_bought_predictions.pop_front().unwrap().identifier;
+                assert!(prediction_id != prediction_identifier, "You have already bought this prediction.");
+            };
+            let mut interface = IERC20CamelDispatcher{contract_address:prediction.buyingToken};
+            let this_address = starknet::get_contract_address();
+            interface.approve(this_address, prediction.buyingPrice.try_into().unwrap());
+            interface.transferFrom(caller_address, this_address, prediction.buyingPrice.try_into().unwrap());
+            user_bought_predictions.append(prediction);
+            prediction
         }
     }
 }
