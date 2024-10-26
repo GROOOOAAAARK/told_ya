@@ -86,7 +86,7 @@ mod ToldYa {
 
             // 2) Hashing the new event
             let hash_state = PoseidonTrait::new();
-            let hash_result: felt252 = hash_state.update(name).update(predictions_deadline).update(event_datetime).update(type_).finalize();            
+            let hash_result: felt252 = hash_state.update(name).update(predictions_deadline).update(event_datetime).update(type_).finalize();
 
             // 3) Creating the instance of the new event
             let new_event: Event_ = Event_ {
