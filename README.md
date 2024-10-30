@@ -1,6 +1,6 @@
 # told_ya
 
-Project for Starkhack 2024
+Project initially presented for Starkhack 2024. The original repository can be found [here](https://github.com/RomainLafont/told_ya). This repository was separated from the first one as a way to clearly separate the original project and its state at the end of the hackathon from the future developments.
 
 ## Test / deploy
 
