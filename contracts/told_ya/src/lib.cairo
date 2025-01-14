@@ -40,8 +40,8 @@ mod ToldYa {
     use core::traits::TryInto;
     use core::poseidon::PoseidonTrait;
     use core::hash::{Hash, HashStateTrait, HashStateExTrait};
-    use openzeppelin::token::erc20::interface::IERC20CamelDispatcher;
-    use openzeppelin::token::erc20::interface::IERC20CamelDispatcherTrait;
+    use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
+    use openzeppelin::token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
     use starknet::ContractAddress;
     use super::Event_;
     use super::Prediction;
@@ -219,18 +219,20 @@ mod ToldYa {
             let caller_address = starknet::get_caller_address();
             assert!(prediction.creator != caller_address, "You can't buy your own prediction.");
 
-            let mut user_bought_predictions: Array<Prediction> = self.get_user_bought_predictions(caller_address);
-            while !user_bought_predictions.is_empty(){
-                let prediction_id: felt252 = user_bought_predictions.pop_front().unwrap().identifier;
+            let mut bought_predictions: Array<Prediction> = self.get_user_bought_predictions(caller_address);
+            while !bought_predictions.is_empty(){
+                let prediction_id: felt252 = bought_predictions.pop_front().unwrap().identifier;
                 assert!(prediction_id != prediction_identifier, "You have already bought this prediction.");
             };
-            let mut interface = IERC20CamelDispatcher{contract_address:prediction.buyingToken};
+            let mut interface = ERC20ABIDispatcher{contract_address:prediction.buyingToken};
             let this_address = starknet::get_contract_address();
             if prediction.buyingPrice > 0 {
                 interface.approve(this_address, prediction.buyingPrice.try_into().unwrap());
-                interface.transferFrom(caller_address, this_address, prediction.buyingPrice.try_into().unwrap());
+                interface.transferFrom(caller_address, prediction.creator, prediction.buyingPrice.try_into().unwrap());
             }
-            user_bought_predictions.append(prediction);
+            let mut user_bought_predictions: Array<felt252> = self.user_bought_predictions.read(caller_address);
+            user_bought_predictions.append(prediction_identifier);
+            self.user_bought_predictions.write(caller_address, user_bought_predictions);
             prediction
         }
     }
