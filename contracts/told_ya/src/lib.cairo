@@ -72,9 +72,8 @@ mod ToldYa {
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState){
-        let caller_address = starknet::get_caller_address();
-        self.ownable.initializer(caller_address);
+    fn constructor(ref self: ContractState, owner: ContractAddress){
+        self.ownable.initializer(owner);
     }
 
     #[abi(embed_v0)]
