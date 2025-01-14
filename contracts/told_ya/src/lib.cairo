@@ -1,6 +1,6 @@
-use starknet::{ContractAddress};
-use openzeppelin::access::ownable::OwnableComponent;
 use core::hash::{Hash, HashStateTrait, HashStateExTrait};
+use openzeppelin::access::ownable::OwnableComponent;
+use starknet::{ContractAddress};
 
 #[starknet::interface]
 pub trait IToldYa<TContractState> {
