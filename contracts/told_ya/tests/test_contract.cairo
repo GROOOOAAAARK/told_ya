@@ -1,15 +1,15 @@
+use core::traits::TryInto;
+use core::array::ArrayTrait;
+
+use told_ya::{Event_, Prediction};
+use told_ya::{IToldYaDispatcher, IToldYaDispatcherTrait};
+
+use openzeppelin::access::ownable::interface::{IOwnable, IOwnableDispatcher, IOwnableDispatcherTrait};
+use openzeppelin::token::erc20::interface::{IERC20, IERC20Dispatcher, IERC20DispatcherTrait};
+use snforge_std::{declare, cheatcodes::{contract_address_const}, start_cheat_caller_address, ContractClassTrait};
 use starknet::ContractAddress;
 
-use snforge_std::{declare, ContractClassTrait};
-
-use told_ya::IToldYaSafeDispatcher;
-use told_ya::IToldYaSafeDispatcherTrait;
-use told_ya::IToldYaDispatcher;
-use told_ya::IToldYaDispatcherTrait;
-use told_ya::Event_;
-use told_ya::Prediction;
-
-fn deploy_contract(name: ByteArray) -> ContractAddress {
+fn deploy_contract(name: ByteArray) -> (ContractAddress, IToldYaDispatcher, ContractAddress) {
     let contract = declare(name).unwrap();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
     contract_address
