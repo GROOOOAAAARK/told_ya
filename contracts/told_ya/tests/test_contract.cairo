@@ -11,8 +11,16 @@ use starknet::ContractAddress;
 
 fn deploy_contract(name: ByteArray) -> (ContractAddress, IToldYaDispatcher, ContractAddress) {
     let contract = declare(name).unwrap();
-    let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
-    contract_address
+    let owner: ContractAddress = contract_address_const::<'owner'>();
+    let owner_felt: felt252 = owner.into();
+    let mut calldata: Array<felt252> = ArrayTrait::new();
+    calldata.append(owner_felt);
+
+    let (contract_address, _,) = contract.deploy(@calldata).unwrap();
+
+    let dispatcher = IToldYaDispatcher { contract_address: contract_address };
+
+    (contract_address, dispatcher, owner)
 }
 
 #[test]
