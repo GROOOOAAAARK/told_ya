@@ -24,10 +24,8 @@ fn deploy_contract(name: ByteArray) -> (ContractAddress, IToldYaDispatcher, Cont
 }
 
 #[test]
-fn test_create_event() {
-    let contract_address = deploy_contract("ToldYa");
-
-    let dispatcher = IToldYaDispatcher { contract_address };
+fn test_events() {
+    let (contract_address, dispatcher, owner): (ContractAddress, IToldYaDispatcher, ContractAddress) = deploy_contract("ToldYa");
 
     // Event
     let name: felt252 = 'test_event';
@@ -35,6 +33,7 @@ fn test_create_event() {
     let event_datetime: felt252 = '2024-08-25';
     let type_: felt252 = 'football';
 
+    start_cheat_caller_address(contract_address, owner);
     let create_event_response = dispatcher.create_event(name, predictions_deadline, event_datetime, type_);
 
     let new_event_identifier = create_event_response.identifier;
