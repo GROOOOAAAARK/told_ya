@@ -1,6 +1,6 @@
 use core::hash::{Hash, HashStateTrait, HashStateExTrait};
 use openzeppelin::access::ownable::OwnableComponent;
-use starknet::{ContractAddress};
+use starknet::{ContractAddress, Map};
 
 #[starknet::interface]
 pub trait IToldYa<TContractState> {
@@ -55,12 +55,12 @@ mod ToldYa {
 
     #[storage]
     struct Storage {
-        events: LegacyMap::<felt252, Event_>,
+        events: Map::<felt252, Event_>,
         events_id: Array<felt252>,
-        predictions: LegacyMap::<felt252, Prediction>,
+        predictions: Map::<felt252, Prediction>,
         predictions_id: Array<felt252>,
-        user_predictions_id: LegacyMap::<ContractAddress, Array<felt252>>,
-        user_bought_predictions: LegacyMap::<ContractAddress, Array<felt252>>,
+        user_predictions_id: Map::<ContractAddress, Array<felt252>>,
+        user_bought_predictions: Map::<ContractAddress, Array<felt252>>,
         #[substorage(v0)]
         ownable: super::OwnableComponent::Storage
     }
@@ -112,15 +112,8 @@ mod ToldYa {
 
             //TODO: [PERF] Use the storage var `events_id` to check if the event_identifier is valid.
             // 1) Checking if event_identifier is valid
-            let mut events_id: Array<felt252> = self.events_id.read();
-            let mut event_id_is_valid: bool = false;
-            while !events_id.is_empty(){
-                let event_id = events_id.pop_front().unwrap();
-                if event_identifier == event_id {
-                    event_id_is_valid = true;
-                }
-            };
-            assert!(event_id_is_valid == true, "event_identifier is not valid.");
+            let mut event: Event_ = self.events.read(event_identifier);
+            assert!(event.identifier != event_identifier, "event_identifier is not valid.");
 
             // 2) Checking if the user has already made a prediction on the event
             let caller_address = starknet::get_caller_address();
