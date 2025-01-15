@@ -8,9 +8,9 @@ Project initially presented for Starkhack 2024. The original repository can be f
 
 Requirements:
 
-- scarb 2.6.3 (e6f921dfd 2024-03-13)
-- cairo: 2.6.3 ([https://crates.io/crates/cairo-lang-compiler/](https://crates.io/crates/cairo-lang-compiler/))
-- sierra: 1.5.0
+- scarb 2.8.4 ()
+- cairo: 2.8.4 ([https://crates.io/crates/cairo-lang-compiler/](https://crates.io/crates/cairo-lang-compiler/))
+- sierra: 1.6.0
 - make (gcc)
 - starkli: 0.2.9
 - katana: 0.7.2 (dev dependency)
