@@ -1,2 +1,5 @@
 .vscode
 contracts/**/target
+.vagrant
+.snfoundry_cache/
+**/**/target
