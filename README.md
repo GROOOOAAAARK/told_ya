@@ -12,7 +12,7 @@ Requirements:
 - cairo: 2.8.4 ([https://crates.io/crates/cairo-lang-compiler/](https://crates.io/crates/cairo-lang-compiler/))
 - sierra: 1.6.0
 - make (gcc)
-- starkli: 0.2.9
+- starkli: 0.3.8
 - katana: 0.7.2 (dev dependency)
 
 ### Setup
