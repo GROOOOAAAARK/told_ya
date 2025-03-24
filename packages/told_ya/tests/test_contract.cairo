@@ -3,6 +3,7 @@ use core::array::ArrayTrait;
 
 use told_ya::{Event_, Prediction};
 use told_ya::{IToldYaDispatcher, IToldYaDispatcherTrait};
+// use told_ya_tests::utils::{deploy_contract, deploy_erc20};
 
 use openzeppelin::access::ownable::interface::{IOwnable, IOwnableDispatcher, IOwnableDispatcherTrait};
 use openzeppelin::token::erc20::interface::{IERC20, IERC20Dispatcher, IERC20DispatcherTrait};
@@ -69,7 +70,7 @@ fn test_events() {
 
 #[test]
 fn test_predictions() {
-    let (contract_address, dispatcher,owner): (ContractAddress, IToldYaDispatcher, ContractAddress) = deploy_contract("ToldYa");
+    let (contract_address, dispatcher, owner): (ContractAddress, IToldYaDispatcher, ContractAddress) = deploy_contract("ToldYa");
 
     // Event
     let name: felt252 = 'test_event';

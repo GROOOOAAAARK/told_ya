@@ -1,6 +1,6 @@
 use core::hash::{Hash, HashStateTrait, HashStateExTrait};
 use openzeppelin::access::ownable::OwnableComponent;
-use starknet::{ContractAddress, Map};
+use starknet::{ContractAddress};
 
 #[starknet::interface]
 pub trait IToldYa<TContractState> {
@@ -39,10 +39,11 @@ mod ToldYa {
     use core::option::OptionTrait;
     use core::traits::TryInto;
     use core::poseidon::PoseidonTrait;
-    use core::hash::{Hash, HashStateTrait, HashStateExTrait};
+    use core::hash::{HashStateTrait};
     use openzeppelin::access::ownable::ownable::OwnableComponent::InternalTrait;
     use openzeppelin::token::erc20::interface::{ERC20ABIDispatcher, ERC20ABIDispatcherTrait};
     use starknet::ContractAddress;
+    use starknet::storage::Map;
     use super::Event_;
     use super::Prediction;
     use super::StoreFelt252Array;
