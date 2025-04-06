@@ -8,6 +8,10 @@ PHONY: under-setup--asdf under-setup--katana setup-unix contract-full contract-a
 
 SHELL=/bin/bash
 
+CONTRACT_HASH_CLASS := $(shell starkli class-hash packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json)
+
+CONTRACT_HASH_CLASS := $(shell starkli class-hash packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json)
+
 setup-unix:
 	make under-setup--asdf && \
 	make under-setup--katana
@@ -54,8 +58,7 @@ deploy-contract:
 
 
 get-contract-class:
-	CONTRACT_HASH_CLASS="$(starkli class-hash \
-	packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json)"
+	CONTRACT_HASH_CLASS=$(CONTRACT_HASH_CLASS)
 
-run-network: \
+run-network:
 	katana
