@@ -1,14 +1,6 @@
-PHONY: under-setup--asdf under-setup--katana setup-unix contract-full contract-artifacts declare-contract deploy-contract get-contract-class run-network
-
-# config-account: \
-# 	starkli account fetch \
-# 	$ACCOUNT \
-# 	--rpc $NETWORK_RPC_URL \
-# 	--output ~/.starkli-wallets/devnet/deployer/account.json
+PHONY: under-setup--asdf under-setup--katana setup-unix contract-full contract-artifacts declare-contract deploy-contract get-contract-class run-network contract-abi
 
 SHELL=/bin/bash
-
-CONTRACT_HASH_CLASS := $(shell starkli class-hash packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json)
 
 CONTRACT_HASH_CLASS := $(shell starkli class-hash packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json)
 
@@ -39,6 +31,9 @@ contract-artifacts:
 	cd packages/told_ya && \
 	scarb build && \
 	cd -
+
+contract-abi:
+	starkli abi packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json > packages/told_ya/target/dev/told_ya_ToldYa.abi.json
 
 declare-contract:
 	starkli declare \
