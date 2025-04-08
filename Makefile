@@ -61,4 +61,4 @@ get-contract-class:
 	CONTRACT_HASH_CLASS=$(CONTRACT_HASH_CLASS)
 
 run-network:
-	katana
+	katana --dev --dev.accounts 3 --dev.seed $(SEED)
