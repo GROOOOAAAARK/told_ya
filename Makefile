@@ -1,4 +1,4 @@
-PHONY: under-setup--asdf under-setup--katana setup-unix contract-full contract-artifacts declare-contract deploy-contract get-contract-class run-network contract-abi
+PHONY: under-setup--asdf under-setup--katana setup-unix contract-full contract-declare-deploy contract-artifacts declare-contract deploy-contract get-contract-class run-network contract-abi
 
 SHELL=/bin/bash
 
@@ -25,6 +25,10 @@ contract-full:
 	make contract-artifacts && \
 	make declare-contract &&\
 	make get-contract-class &&\
+	make deploy-contract
+
+contract-declare-deploy:
+	make declare-contract &&\
 	make deploy-contract
 
 contract-artifacts:
