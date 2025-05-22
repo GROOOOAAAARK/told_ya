@@ -60,4 +60,5 @@ get-contract-class:
 	CONTRACT_HASH_CLASS=$(CONTRACT_HASH_CLASS)
 
 run-network:
-	katana
+	katana --http.cors_origins "http://localhost:3000"
+
