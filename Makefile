@@ -35,7 +35,6 @@ contract-full:
 
 contract-declare-deploy:
 	make declare-contract &&\
-	make get-contract-class &&\
 	make deploy-contract
 
 contract-artifacts:
@@ -57,7 +56,6 @@ deploy-contract:
 	starkli deploy \
 	--account katana \
 	--rpc $(NETWORK_RPC_URL) \
-	--strk \
 	$(CONTRACT_HASH_CLASS) \
 	$(OWNER_ADDRESS)
 
