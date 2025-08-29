@@ -16,6 +16,12 @@ under-setup--asdf:
 	asdf install scarb 2.6.3 && \
 	asdf global scarb 2.6.3 &&
 
+under-setup--starkli: # Install starkli and setup for zsh
+	curl https://get.starkli.sh | sh && \
+	echo . /Users/thomas_grk/.starkli/env >> .zshenv && \
+	source .zshenv && \
+	starkliup
+
 under-setup--katana:
 	asdf plugin add dojo https://github.com/dojoengine/asdf-dojo && \
 	asdf install dojo 0.7.2 && \
