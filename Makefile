@@ -50,7 +50,6 @@ declare-contract:
 	starkli declare \
 	--account katana \
 	--rpc=$(NETWORK_RPC_URL) \
-	--strk \
 	packages/told_ya/target/dev/told_ya_ToldYa.contract_class.json
 
 deploy-contract:
