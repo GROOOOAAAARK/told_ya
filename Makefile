@@ -35,6 +35,7 @@ contract-full:
 
 contract-declare-deploy:
 	make declare-contract &&\
+	make get-contract-class &&\
 	make deploy-contract
 
 contract-artifacts:
