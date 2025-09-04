@@ -34,11 +34,7 @@ contract-full:
 	make get-contract-class &&\
 	make deploy-contract
 
-contract-declare-deploy:
-	make declare-contract &&\
-	make deploy-contract
-
-contract-artifacts:
+build-artifacts-contract:
 	cd packages/told_ya && \
 	scarb build && \
 	cd -
@@ -60,6 +56,9 @@ deploy-contract:
 	$(CONTRACT_HASH_CLASS) \
 	$(OWNER_ADDRESS)
 
+declare-deploy-contract:
+	make declare-contract &&\
+	make deploy-contract
 
 get-contract-class:
 	CONTRACT_HASH_CLASS=$(CONTRACT_HASH_CLASS)
