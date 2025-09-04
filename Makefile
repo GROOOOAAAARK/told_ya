@@ -6,7 +6,8 @@ CONTRACT_HASH_CLASS := $(shell starkli class-hash packages/told_ya/target/dev/to
 
 setup-unix:
 	make under-setup--asdf && \
-	make under-setup--katana
+	make under-setup--katana && \
+	make under-setup--starkli
 
 under-setup--asdf:
 	git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0 && \
