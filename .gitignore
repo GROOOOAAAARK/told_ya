@@ -1,5 +1,5 @@
+.envrc
 .vscode
-contracts/**/target
-.vagrant
 .snfoundry_cache/
 **/**/target
+!**/**/target/**/*.abi.json
