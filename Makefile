@@ -68,9 +68,22 @@ run-network:
 
 # Contract Interactions
 
-get_events:
+get-events:
 	sncast call \
 	--contract-address $(CONTRACT_ADDRESS) \
 	--function get_events \
+	--url $(NETWORK_RPC_URL)
+
+get-event:
+	sncast call \
+	--contract-address $(CONTRACT_ADDRESS) \
+	--function get_event \
+	--url $(NETWORK_RPC_URL) \
+	--calldata $(EVENT_IDENTIFIER)
+
+create-event:
+	sncast call \
+	--contract-address $(CONTRACT_ADDRESS) \
+	--function create_event \
 	--url $(NETWORK_RPC_URL) \
 	--calldata "0x746573745f6576656e74" "0x30312f30312f32303236" "0x30322f30312f32303236" "0x666f6f7462616c6c"
